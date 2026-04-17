@@ -1,16 +1,90 @@
-# React + Vite
+# Opofinance KYC Platform Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Internal dashboard for managing KYC (Know Your Customer) applications at Opofinance.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| Layer    | Technology                              |
+|----------|-----------------------------------------|
+| Frontend | React 19, Vite, MUI (Material UI)       |
+| Backend  | Node.js, Express 5                      |
+| Database | PostgreSQL                              |
+| ORM      | Prisma                                  |
+| Auth     | bcrypt password hashing, JWT-style flow |
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Authentication** — Register and login with bcrypt-hashed passwords
+- **KYC Applications** — Full CRUD: create, view, update, delete applications
+- **Application fields** — Client name/email, document type, status, risk level, country, assigned agent, notes
+- **Dark / Light mode** — Theme toggle persisted across sessions
+- **REST API** — `/api/auth`, `/api/kyc`, `/api/health` endpoints
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```
+kyc-dashboard/
+├── src/                  # React frontend (Vite)
+└── backend/
+    ├── controllers/      # Route handler logic
+    ├── routes/           # Express route definitions
+    └── prisma/           # Prisma schema & migrations
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- PostgreSQL running locally (or a remote connection string)
+
+### 1. Backend
+
+```bash
+cd backend
+npm install
+
+# Create a .env file with your database URL
+echo 'DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/kyc_db"' > .env
+
+# Run migrations and generate Prisma client
+npm run db:migrate
+npm run db:generate
+
+# Start the dev server (port 3001)
+npm run dev
+```
+
+### 2. Frontend
+
+```bash
+# From the project root
+npm install
+npm run dev   # starts at http://localhost:5173
+```
+
+### Prisma utilities
+
+```bash
+cd backend
+npm run db:migrate   # apply new migrations
+npm run db:studio    # open Prisma Studio GUI
+```
+
+## API Endpoints
+
+| Method | Path                  | Description              |
+|--------|-----------------------|--------------------------|
+| POST   | /api/auth/register    | Register a new user      |
+| POST   | /api/auth/login       | Login and receive token  |
+| GET    | /api/kyc              | List all KYC applications|
+| POST   | /api/kyc              | Create new application   |
+| PUT    | /api/kyc/:id          | Update application       |
+| DELETE | /api/kyc/:id          | Delete application       |
+| GET    | /api/health           | Health check             |
+
+## Team
+
+| Name      | Role               |
+|-----------|--------------------|
+| Ali Javid | KYC Team Manager   |
