@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  name          String
+  email         String   @unique
+  password_hash String?
+  role          String?
+  created_at    DateTime @default(now())
+
+  @@map("users")
+}
+
+model KycApplication {
+  id             Int      @id @default(autoincrement())
+  client_name    String
+  client_email   String
+  document_type  String?
+  status         String   @default("Pending")
+  assigned_to    String?
+  risk_level     String?
+  country        String?
+  notes          String?
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  @@map("kyc_applications")
+}

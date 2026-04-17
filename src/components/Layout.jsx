@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 
+function userInitials(name = '') {
+  return name.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2) || '?';
+}
+
 const navItems = [
   {
     path: '/',
@@ -10,6 +14,17 @@ const navItems = [
       <svg fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
         <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
         <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+      </svg>
+    ),
+  },
+  {
+    path: '/kyc-applications',
+    label: 'KYC Applications',
+    icon: (
+      <svg fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+        <polyline points="14,2 14,8 20,8"/>
+        <line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/>
       </svg>
     ),
   },
@@ -96,8 +111,9 @@ const navItems = [
 ];
 
 const pageTitles = {
-  '/':            { title: null, sub: null },
-  '/kyc-queue':   { title: 'KYC Queue',          sub: '24 pending verification requests' },
+  '/':                    { title: null, sub: null },
+  '/kyc-applications':    { title: 'KYC Applications',    sub: 'Manage all KYC application records' },
+  '/kyc-queue':           { title: 'KYC Queue',          sub: '24 pending verification requests' },
   '/documents':   { title: 'Document Review',    sub: 'Submitted documents awaiting verification' },
   '/withdrawals': { title: 'Withdrawals',         sub: 'Withdrawal requests requiring KYC approval' },
   '/rejected':    { title: 'Rejected Follow-up', sub: '7 cases requiring action' },
@@ -116,14 +132,15 @@ function todayStr() {
   return new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-export default function Layout({ onLogout, children }) {
+export default function Layout({ user, onLogout, children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { isLight, toggleTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
 
+  const firstName = (user?.name || '').split(' ')[0] || 'there';
   const cfg = pageTitles[location.pathname] || { title: null, sub: null };
-  const title = cfg.title || `${greeting()}, Ali`;
+  const title = cfg.title || `${greeting()}, ${firstName}`;
   const sub   = cfg.sub   || todayStr();
 
   useEffect(() => {
@@ -172,10 +189,10 @@ export default function Layout({ onLogout, children }) {
 
         <div className="sidebar-bottom">
           <div className="user-tile">
-            <div className="avatar avatar-32">AJ</div>
+            <div className="avatar avatar-32">{userInitials(user?.name)}</div>
             <div>
-              <div className="user-tile-name">Ali Javid</div>
-              <div className="user-tile-role">KYC Team Manager</div>
+              <div className="user-tile-name">{user?.name || '—'}</div>
+              <div className="user-tile-role" style={{ textTransform: 'capitalize' }}>{user?.role || '—'}</div>
             </div>
           </div>
           <button className="logout-btn" onClick={onLogout}>
@@ -229,7 +246,7 @@ export default function Layout({ onLogout, children }) {
               </svg>
               <span className="notif-dot"></span>
             </div>
-            <div className="avatar avatar-38" title="Ali Javid — KYC Team Manager">AJ</div>
+            <div className="avatar avatar-38" title={`${user?.name} — ${user?.role}`}>{userInitials(user?.name)}</div>
           </div>
         </header>
 

@@ -5,6 +5,7 @@ import Layout from './components/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import KYCQueue from './pages/KYCQueue';
+import KYCApplications from './pages/KYCApplications';
 import DocumentReview from './pages/DocumentReview';
 import Withdrawals from './pages/Withdrawals';
 import RejectedFollowup from './pages/RejectedFollowup';
@@ -14,25 +15,26 @@ import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 
 function AppRoutes() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [user, setUser] = useState(null); // { name, role }
 
-  if (!loggedIn) {
-    return <Login onLogin={() => setLoggedIn(true)} />;
+  if (!user) {
+    return <Login onLogin={(userData) => setUser(userData)} />;
   }
 
   return (
-    <Layout onLogout={() => setLoggedIn(false)}>
+    <Layout user={user} onLogout={() => setUser(null)}>
       <Routes>
-        <Route path="/"            element={<Dashboard />} />
-        <Route path="/kyc-queue"   element={<KYCQueue />} />
-        <Route path="/documents"   element={<DocumentReview />} />
-        <Route path="/withdrawals" element={<Withdrawals />} />
-        <Route path="/rejected"    element={<RejectedFollowup />} />
-        <Route path="/team"        element={<TeamPerformance />} />
-        <Route path="/risk"        element={<RiskCompliance />} />
-        <Route path="/reports"     element={<Reports />} />
-        <Route path="/settings"    element={<Settings />} />
-        <Route path="*"            element={<Navigate to="/" replace />} />
+        <Route path="/"                  element={<Dashboard />} />
+        <Route path="/kyc-queue"         element={<KYCQueue />} />
+        <Route path="/kyc-applications"  element={<KYCApplications />} />
+        <Route path="/documents"         element={<DocumentReview />} />
+        <Route path="/withdrawals"       element={<Withdrawals />} />
+        <Route path="/rejected"          element={<RejectedFollowup />} />
+        <Route path="/team"              element={<TeamPerformance />} />
+        <Route path="/risk"              element={<RiskCompliance />} />
+        <Route path="/reports"           element={<Reports />} />
+        <Route path="/settings"          element={<Settings />} />
+        <Route path="*"                  element={<Navigate to="/" replace />} />
       </Routes>
     </Layout>
   );
